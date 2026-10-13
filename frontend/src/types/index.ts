@@ -47,10 +47,12 @@ export interface Session {
 
 export interface ContentItem {
   id: string
+  user_id?: string | null
   step_key: string
   title: string
   body: string
   is_default: boolean
+  created_at?: string
 }
 
 export interface Journal {

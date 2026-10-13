@@ -29,6 +29,7 @@ const menuOptions = computed<MenuOption[]>(() => [
   { label: '今日会话', key: '/today' },
   { label: '打卡日历', key: '/calendar' },
   { label: '书写日记', key: '/journals' },
+  { label: '肯定语', key: '/affirmations' },
   { label: '设置', key: '/settings' },
 ])
 

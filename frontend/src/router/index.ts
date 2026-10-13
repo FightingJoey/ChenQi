@@ -41,6 +41,12 @@ const router = createRouter({
       component: () => import('@/views/JournalsView.vue'),
       meta: { auth: true },
     },
+    {
+      path: '/affirmations',
+      name: 'affirmations',
+      component: () => import('@/views/AffirmationsView.vue'),
+      meta: { auth: true },
+    },
   ],
 })
 
