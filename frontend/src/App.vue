@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, h } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute, useRouter, RouterView } from 'vue-router'
 import {
   NConfigProvider,
@@ -11,7 +11,6 @@ import {
   NMenu,
   NButton,
   NSpace,
-  NText,
   zhCN,
   dateZhCN,
   type MenuOption,

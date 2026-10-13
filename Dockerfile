@@ -8,6 +8,7 @@ RUN npm run build
 
 FROM golang:1.24-alpine AS be
 WORKDIR /src
+ENV GOTOOLCHAIN=auto
 RUN apk add --no-cache git ca-certificates
 COPY backend/go.mod backend/go.sum ./
 RUN go mod download
@@ -15,7 +16,7 @@ COPY backend/ ./
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /out/server ./cmd/server
 
 FROM alpine:3.20
-RUN apk add --no-cache ca-certificates tzdata
+RUN apk add --no-cache ca-certificates tzdata wget
 WORKDIR /app
 COPY --from=be /out/server /app/server
 COPY --from=fe /fe/dist /app/static
