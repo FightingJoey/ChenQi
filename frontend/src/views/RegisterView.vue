@@ -17,7 +17,7 @@ async function submit() {
   loading.value = true
   try {
     await auth.register(username.value.trim(), email.value.trim(), password.value)
-    message.success('注册成功，已为你创建默认 SAVERS 例程')
+    message.success('注册成功，已为你创建默认晨启例程')
     router.push('/today')
   } catch (e: unknown) {
     message.error(e instanceof Error ? e.message : '注册失败')
@@ -29,7 +29,7 @@ async function submit() {
 
 <template>
   <div class="min-h-[80vh] flex items-center justify-center">
-    <n-card class="w-full max-w-md shadow-lg border-orange-100" title="注册 · 开启你的奇迹早晨">
+    <n-card class="w-full max-w-md shadow-lg border-orange-100" title="注册 · 晨启">
       <n-form @submit.prevent="submit">
         <n-form-item label="用户名">
           <n-input v-model:value="username" placeholder="例如 miracle" />

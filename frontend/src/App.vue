@@ -55,7 +55,7 @@ function logout() {
                   S
                 </div>
                 <div>
-                  <div class="font-semibold text-gray-800 leading-tight">早起奇迹 · SAVERS</div>
+                  <div class="font-semibold text-gray-800 leading-tight">晨启 · ChenQi</div>
                   <div class="text-xs text-gray-500">你好，{{ auth.user?.username }}</div>
                 </div>
               </div>

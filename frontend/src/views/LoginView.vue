@@ -30,7 +30,7 @@ async function submit() {
 
 <template>
   <div class="min-h-[80vh] flex items-center justify-center">
-    <n-card class="w-full max-w-md shadow-lg border-orange-100" title="登录 · 早起奇迹">
+    <n-card class="w-full max-w-md shadow-lg border-orange-100" title="登录 · 晨启">
       <n-form @submit.prevent="submit">
         <n-form-item label="用户名或邮箱">
           <n-input v-model:value="username" placeholder="用户名 / 邮箱" @keyup.enter="submit" />
@@ -47,7 +47,7 @@ async function submit() {
         <router-link to="/register" class="text-orange-600 hover:underline">立即注册</router-link>
       </div>
       <n-text depth="3" class="block mt-6 text-xs leading-relaxed">
-        基于《早起的奇迹》S.A.V.E.R.S. 人生拯救计划：静默、肯定语、观想、运动、阅读、书写。
+        晨启帮你践行《早起的奇迹》S.A.V.E.R.S.：静默、肯定语、观想、运动、阅读、书写。
       </n-text>
     </n-card>
   </div>
