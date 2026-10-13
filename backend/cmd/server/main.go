@@ -70,7 +70,11 @@ func main() {
 			priv.Post("/sessions/{id}/complete", sessionH.Complete)
 
 			priv.Get("/content", contentH.List)
+			priv.Post("/content", contentH.Create)
 			priv.Get("/content/{id}", contentH.Get)
+			priv.Put("/content/{id}", contentH.Update)
+			priv.Delete("/content/{id}", contentH.Delete)
+			priv.Post("/content/{id}/clone", contentH.Clone)
 
 			priv.Get("/journals", journalH.List)
 			priv.Post("/journals", journalH.Create)
