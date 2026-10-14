@@ -28,8 +28,8 @@ async function submit() {
 </script>
 
 <template>
-  <div class="min-h-[80vh] flex items-center justify-center">
-    <n-card class="w-full max-w-md shadow-lg border-orange-100" title="注册 · 晨启">
+  <div class="min-h-[80vh] min-h-[80dvh] flex items-center justify-center px-1 py-6 safe-bottom">
+    <n-card class="w-full max-w-md shadow-lg border-orange-100 mx-auto" title="注册 · 晨启">
       <n-form @submit.prevent="submit">
         <n-form-item label="用户名">
           <n-input v-model:value="username" placeholder="例如 miracle" />

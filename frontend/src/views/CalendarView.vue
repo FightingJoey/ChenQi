@@ -70,7 +70,7 @@ onMounted(load)
 <template>
   <div class="space-y-6">
     <div>
-      <h1 class="text-2xl font-bold text-gray-800">打卡日历</h1>
+      <h1 class="text-xl sm:text-2xl font-bold text-gray-800">打卡日历</h1>
       <p class="text-gray-500 text-sm mt-1">查看连续天数与完成记录</p>
     </div>
 

@@ -202,7 +202,7 @@ watch(selectedContent, (id) => {
   <div class="space-y-6">
     <div class="flex flex-wrap items-end justify-between gap-3">
       <div>
-        <h1 class="text-2xl font-bold text-gray-800">今日会话</h1>
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-800">今日会话</h1>
         <p class="text-gray-500 text-sm mt-1">{{ date || '—' }} · 按顺序完成 S.A.V.E.R.S.</p>
       </div>
       <n-tag v-if="session" :type="session.status === 'completed' ? 'success' : 'info'">
@@ -210,14 +210,14 @@ watch(selectedContent, (id) => {
       </n-tag>
     </div>
 
-    <n-card v-if="!session" class="shadow-sm border-orange-100">
+    <n-card v-if="!session" class="shadow-sm border-orange-100 overflow-hidden">
       <div class="text-center py-8 space-y-4">
         <div class="text-5xl">☀️</div>
-        <h2 class="text-xl font-semibold">准备好开始你的奇迹早晨了吗？</h2>
+        <h2 class="text-lg sm:text-xl font-semibold px-1">准备好开始你的奇迹早晨了吗？</h2>
         <p class="text-gray-500 max-w-md mx-auto">
           依次完成静默、肯定语、观想、运动、阅读、书写。每一步都有计时与引导内容。
         </p>
-        <n-button type="primary" size="large" :loading="loading" class="!bg-orange-500" @click="startSession">
+        <n-button type="primary" size="large" block :loading="loading" class="!bg-orange-500 max-w-sm mx-auto" @click="startSession">
           开始今日会话
         </n-button>
       </div>
@@ -264,8 +264,8 @@ watch(selectedContent, (id) => {
               <p class="text-gray-500 text-sm mt-1">{{ stepMeta[currentStep.key]?.hint }}</p>
             </div>
 
-            <div class="rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-100 p-6 text-center">
-              <div class="text-5xl font-mono font-bold text-orange-700 tracking-wider">
+            <div class="rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-100 p-4 sm:p-6 text-center">
+              <div class="text-4xl sm:text-5xl font-mono font-bold text-orange-700 tracking-wider">
                 {{ formatTime(remaining) }}
               </div>
               <div class="text-xs text-gray-500 mt-2">
@@ -279,10 +279,10 @@ watch(selectedContent, (id) => {
               />
             </div>
 
-            <n-space>
-              <n-button type="primary" class="!bg-orange-500" @click="finishStep('completed')">完成此步</n-button>
-              <n-button @click="finishStep('skipped')">跳过</n-button>
-            </n-space>
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+              <n-button type="primary" class="!bg-orange-500 flex-1" size="large" @click="finishStep('completed')">完成此步</n-button>
+              <n-button class="flex-1" size="large" @click="finishStep('skipped')">跳过</n-button>
+            </div>
           </div>
 
           <div class="flex-1 space-y-3">

@@ -106,12 +106,12 @@ onMounted(load)
   <div class="space-y-6">
     <div class="flex flex-wrap items-end justify-between gap-3">
       <div>
-        <h1 class="text-2xl font-bold text-gray-800">肯定语</h1>
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-800">肯定语</h1>
         <p class="text-gray-500 text-sm mt-1">
           管理系统与个人肯定语。今日会话的「肯定语」步骤会列出你创建的文案。
         </p>
       </div>
-      <n-button type="primary" class="!bg-orange-500" @click="openCreate()">新建肯定语</n-button>
+      <n-button type="primary" class="!bg-orange-500 w-full sm:w-auto" @click="openCreate()">新建肯定语</n-button>
     </div>
 
     <n-spin :show="loading">
@@ -170,7 +170,8 @@ onMounted(load)
       v-model:show="showForm"
       preset="card"
       :title="editingId ? '编辑肯定语' : '新建肯定语'"
-      class="max-w-lg"
+      class="w-[calc(100vw-1.5rem)] max-w-lg"
+      :style="{ margin: '0.75rem' }"
       :mask-closable="false"
     >
       <n-form>

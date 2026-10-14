@@ -4,6 +4,11 @@
 
 html, body, #app {
   min-height: 100%;
+  min-height: 100dvh;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -11,4 +16,24 @@ body {
   color: #1f2937;
   background: linear-gradient(180deg, #fff8f1 0%, #fef3c7 40%, #fef9f3 100%);
   background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+#app {
+  overflow-x: hidden;
+}
+
+/* Prefer comfortable tap targets on touch devices */
+@media (pointer: coarse) {
+  button, .n-button, a {
+    min-height: 40px;
+  }
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
 }

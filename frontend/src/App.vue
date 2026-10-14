@@ -33,6 +33,14 @@ const menuOptions = computed<MenuOption[]>(() => [
   { label: '设置', key: '/settings' },
 ])
 
+const bottomTabs = [
+  { key: '/today', label: '今日', emoji: '☀️' },
+  { key: '/calendar', label: '日历', emoji: '📅' },
+  { key: '/affirmations', label: '肯定语', emoji: '💬' },
+  { key: '/journals', label: '日记', emoji: '✍️' },
+  { key: '/settings', label: '设置', emoji: '⚙️' },
+]
+
 function onMenu(key: string) {
   router.push(key)
 }
@@ -41,50 +49,74 @@ function logout() {
   auth.logout()
   router.push('/login')
 }
+
+function isTabActive(key: string) {
+  return route.path === key || route.path.startsWith(key + '/')
+}
 </script>
 
 <template>
   <n-config-provider :locale="zhCN" :date-locale="dateZhCN">
     <n-message-provider>
       <n-dialog-provider>
-        <n-layout class="min-h-screen bg-transparent">
-          <n-layout-header v-if="showNav" class="px-4 md:px-8 py-3 bg-white/80 backdrop-blur border-b border-orange-100">
-            <div class="max-w-5xl mx-auto flex items-center justify-between gap-4">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 text-white flex items-center justify-center font-bold shadow">
-                  S
+        <n-layout class="min-h-screen min-h-[100dvh] bg-transparent">
+          <n-layout-header
+            v-if="showNav"
+            class="safe-top px-3 sm:px-4 md:px-8 py-3 bg-white/90 backdrop-blur border-b border-orange-100 sticky top-0 z-20"
+          >
+            <div class="max-w-5xl mx-auto flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                <div class="w-9 h-9 shrink-0 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 text-white flex items-center justify-center font-bold shadow">
+                  晨
                 </div>
-                <div>
-                  <div class="font-semibold text-gray-800 leading-tight">晨启 · ChenQi</div>
-                  <div class="text-xs text-gray-500">你好，{{ auth.user?.username }}</div>
+                <div class="min-w-0">
+                  <div class="font-semibold text-gray-800 leading-tight truncate">晨启 · ChenQi</div>
+                  <div class="text-xs text-gray-500 truncate">你好，{{ auth.user?.username }}</div>
                 </div>
               </div>
-              <n-space align="center">
+              <n-space align="center" :wrap="false">
                 <n-menu
                   mode="horizontal"
                   :value="route.path"
                   :options="menuOptions"
                   @update:value="onMenu"
-                  class="hidden md:flex"
+                  class="hidden lg:flex"
                 />
-                <n-button quaternary size="small" @click="logout">退出</n-button>
+                <n-button quaternary size="medium" class="!px-3" @click="logout">退出</n-button>
               </n-space>
             </div>
-            <div class="md:hidden max-w-5xl mx-auto mt-2">
-              <n-menu
-                mode="horizontal"
-                :value="route.path"
-                :options="menuOptions"
-                @update:value="onMenu"
-              />
-            </div>
           </n-layout-header>
-          <n-layout-content class="px-4 md:px-8 py-6">
-            <div class="max-w-5xl mx-auto">
+
+          <n-layout-content
+            class="px-3 sm:px-4 md:px-8 py-4 sm:py-6"
+            :class="showNav ? 'pb-24 md:pb-6' : ''"
+          >
+            <div class="max-w-5xl mx-auto w-full">
               <router-view v-if="auth.ready || route.meta.guest" />
               <div v-else class="text-center text-gray-500 py-20">加载中…</div>
             </div>
           </n-layout-content>
+
+          <!-- Mobile bottom nav -->
+          <nav
+            v-if="showNav"
+            class="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-orange-100 safe-bottom"
+            aria-label="主导航"
+          >
+            <div class="grid grid-cols-5 max-w-lg mx-auto">
+              <button
+                v-for="tab in bottomTabs"
+                :key="tab.key"
+                type="button"
+                class="flex flex-col items-center justify-center gap-0.5 py-2 min-h-[56px] text-[11px] sm:text-xs transition-colors"
+                :class="isTabActive(tab.key) ? 'text-orange-600 font-semibold' : 'text-gray-500'"
+                @click="onMenu(tab.key)"
+              >
+                <span class="text-lg leading-none" aria-hidden="true">{{ tab.emoji }}</span>
+                <span>{{ tab.label }}</span>
+              </button>
+            </div>
+          </nav>
         </n-layout>
       </n-dialog-provider>
     </n-message-provider>

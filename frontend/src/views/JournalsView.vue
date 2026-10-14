@@ -25,7 +25,7 @@ onMounted(load)
 <template>
   <div class="space-y-6">
     <div>
-      <h1 class="text-2xl font-bold text-gray-800">书写日记</h1>
+      <h1 class="text-xl sm:text-2xl font-bold text-gray-800">书写日记</h1>
       <p class="text-gray-500 text-sm mt-1">来自 Scribing 步骤的记录</p>
     </div>
     <n-spin :show="loading">
