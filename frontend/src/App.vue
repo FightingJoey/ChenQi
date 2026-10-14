@@ -5,9 +5,6 @@ import {
   NConfigProvider,
   NMessageProvider,
   NDialogProvider,
-  NLayout,
-  NLayoutHeader,
-  NLayoutContent,
   NMenu,
   NButton,
   NSpace,
@@ -59,10 +56,11 @@ function isTabActive(key: string) {
   <n-config-provider :locale="zhCN" :date-locale="dateZhCN">
     <n-message-provider>
       <n-dialog-provider>
-        <n-layout class="min-h-screen min-h-[100dvh] bg-transparent">
-          <n-layout-header
+        <!-- Plain shell: avoid n-layout overflow containers that trap position:fixed on mobile WebKit -->
+        <div class="app-shell flex flex-col min-h-[100dvh] min-h-screen bg-transparent">
+          <header
             v-if="showNav"
-            class="safe-top px-3 sm:px-4 md:px-8 py-3 bg-white/90 backdrop-blur border-b border-orange-100 sticky top-0 z-20"
+            class="app-header safe-top sticky top-0 z-20 px-3 sm:px-4 md:px-8 py-3 bg-white/95 border-b border-orange-100"
           >
             <div class="max-w-5xl mx-auto flex items-center justify-between gap-3">
               <div class="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -85,22 +83,24 @@ function isTabActive(key: string) {
                 <n-button quaternary size="medium" class="!px-3" @click="logout">退出</n-button>
               </n-space>
             </div>
-          </n-layout-header>
+          </header>
 
-          <n-layout-content
-            class="px-3 sm:px-4 md:px-8 py-4 sm:py-6"
-            :class="showNav ? 'pb-24 md:pb-6' : ''"
+          <main
+            class="flex-1 w-full px-3 sm:px-4 md:px-8 py-4 sm:py-6"
+            :class="showNav ? 'pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-6' : ''"
           >
             <div class="max-w-5xl mx-auto w-full">
               <router-view v-if="auth.ready || route.meta.guest" />
               <div v-else class="text-center text-gray-500 py-20">加载中…</div>
             </div>
-          </n-layout-content>
+          </main>
+        </div>
 
-          <!-- Mobile bottom nav -->
+        <!-- Teleport to body so fixed is always relative to the viewport -->
+        <Teleport to="body">
           <nav
             v-if="showNav"
-            class="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-orange-100 safe-bottom"
+            class="mobile-tabbar md:hidden"
             aria-label="主导航"
           >
             <div class="grid grid-cols-5 max-w-lg mx-auto">
@@ -108,7 +108,7 @@ function isTabActive(key: string) {
                 v-for="tab in bottomTabs"
                 :key="tab.key"
                 type="button"
-                class="flex flex-col items-center justify-center gap-0.5 py-2 min-h-[56px] text-[11px] sm:text-xs transition-colors"
+                class="flex flex-col items-center justify-center gap-0.5 py-2 min-h-[52px] text-[11px] sm:text-xs transition-colors"
                 :class="isTabActive(tab.key) ? 'text-orange-600 font-semibold' : 'text-gray-500'"
                 @click="onMenu(tab.key)"
               >
@@ -117,7 +117,7 @@ function isTabActive(key: string) {
               </button>
             </div>
           </nav>
-        </n-layout>
+        </Teleport>
       </n-dialog-provider>
     </n-message-provider>
   </n-config-provider>

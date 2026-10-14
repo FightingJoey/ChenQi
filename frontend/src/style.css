@@ -21,9 +21,9 @@ body {
 
 #app {
   overflow-x: hidden;
+  min-height: 100dvh;
 }
 
-/* Prefer comfortable tap targets on touch devices */
 @media (pointer: coarse) {
   button, .n-button, a {
     min-height: 40px;
@@ -36,4 +36,18 @@ body {
 
 .safe-top {
   padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Viewport-fixed mobile tab bar — lives on body via Teleport */
+.mobile-tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: #fff;
+  border-top: 1px solid #ffedd5;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  /* Avoid filter/backdrop-filter (can create containing blocks on some engines) */
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.04);
 }
