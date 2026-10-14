@@ -5,11 +5,13 @@ import {
 } from 'naive-ui'
 import { api } from '@/api/client'
 import type { Routine, RoutineStep } from '@/types'
+import { isSoundEnabled, setSoundEnabled, playStepComplete, unlockAudio } from '@/utils/sounds'
 
 const message = useMessage()
 const loading = ref(false)
 const saving = ref(false)
 const steps = ref<RoutineStep[]>([])
+const soundOn = ref(isSoundEnabled())
 
 async function load() {
   loading.value = true
@@ -47,6 +49,18 @@ function setMinutes(s: RoutineStep, m: number | null) {
   s.duration_seconds = Math.max(1, m || 1) * 60
 }
 
+async function onSoundToggle(v: boolean) {
+  soundOn.value = v
+  setSoundEnabled(v)
+  if (v) {
+    await unlockAudio()
+    playStepComplete()
+    message.success('完成音效已开启')
+  } else {
+    message.info('完成音效已关闭')
+  }
+}
+
 onMounted(load)
 </script>
 
@@ -55,12 +69,24 @@ onMounted(load)
     <div class="flex flex-wrap items-end justify-between gap-3">
       <div class="min-w-0">
         <h1 class="text-xl sm:text-2xl font-bold text-gray-800">设置</h1>
-        <p class="text-gray-500 text-sm mt-1">调整各步骤时长与开关（最短 1 分钟）</p>
+        <p class="text-gray-500 text-sm mt-1">调整各步骤时长、开关与音效</p>
       </div>
       <n-button type="primary" class="!bg-orange-500 w-full sm:w-auto" :loading="saving" @click="save">保存</n-button>
     </div>
 
-    <n-card class="shadow-sm border-orange-100">
+    <n-card class="shadow-sm border-orange-100" title="反馈音效">
+      <div class="flex items-center justify-between gap-3">
+        <div class="min-w-0">
+          <div class="font-medium">完成提示音</div>
+          <p class="text-xs text-gray-500 mt-1 leading-relaxed">
+            步骤完成 / 今日打卡时播放轻柔提示音（默认开启）。关闭则仅保留文字提示。
+          </p>
+        </div>
+        <n-switch :value="soundOn" @update:value="onSoundToggle" />
+      </div>
+    </n-card>
+
+    <n-card class="shadow-sm border-orange-100" title="例行步骤">
       <div class="space-y-3">
         <div
           v-for="s in steps"

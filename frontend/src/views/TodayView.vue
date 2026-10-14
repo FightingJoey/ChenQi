@@ -6,6 +6,12 @@ import {
 } from 'naive-ui'
 import { api } from '@/api/client'
 import type { ContentItem, Session, SessionStep } from '@/types'
+import {
+  playStepComplete,
+  playStepSkip,
+  playSessionComplete,
+  unlockAudio,
+} from '@/utils/sounds'
 
 const message = useMessage()
 const loading = ref(false)
@@ -21,6 +27,7 @@ const journalPrompt = ref('')
 const mood = ref(0)
 const note = ref('')
 const selectedContent = ref<string | null>(null)
+const finishing = ref(false)
 
 const stepMeta: Record<string, { emoji: string; hint: string }> = {
   silence: { emoji: '🧘', hint: '静坐、呼吸、感受当下' },
@@ -84,6 +91,7 @@ async function loadContent(stepKey?: string) {
 async function startSession() {
   loading.value = true
   try {
+    await unlockAudio()
     session.value = await api<Session>('/sessions/start', { method: 'POST' })
     message.success('今日会话已开始')
     const first = session.value.steps.find((s) => s.status === 'pending')
@@ -108,7 +116,13 @@ function startTimer(seconds: number) {
   elapsed.value = 0
   timerId.value = window.setInterval(() => {
     elapsed.value += 1
-    if (remaining.value > 0) remaining.value -= 1
+    if (remaining.value > 0) {
+      remaining.value -= 1
+      if (remaining.value === 0) {
+        // Timer ended — auto-complete current step with feedback
+        void finishStep('completed', { fromTimer: true })
+      }
+    }
   }, 1000)
 }
 
@@ -131,11 +145,21 @@ async function enterStep(step: SessionStep, markActive: boolean) {
   startTimer(step.planned_duration_seconds)
 }
 
-async function finishStep(status: 'completed' | 'skipped') {
-  if (!session.value || !currentStep.value) return
+async function finishStep(
+  status: 'completed' | 'skipped',
+  opts: { fromTimer?: boolean } = {},
+) {
+  if (!session.value || !currentStep.value || finishing.value) return
+  // Avoid double-fire if timer and click race
+  if (timerId.value == null && opts.fromTimer) return
+  finishing.value = true
+  const step = currentStep.value
+  const stepName = step.name
+  const stepEmoji = stepMeta[step.key]?.emoji || '✨'
   stopTimer()
   try {
-    if (currentStep.value.key === 'scribing' && status === 'completed' && journalBody.value.trim()) {
+    await unlockAudio()
+    if (step.key === 'scribing' && status === 'completed' && journalBody.value.trim()) {
       await api('/journals', {
         method: 'POST',
         body: JSON.stringify({
@@ -145,7 +169,7 @@ async function finishStep(status: 'completed' | 'skipped') {
         }),
       })
     }
-    await api(`/sessions/${session.value.id}/steps/${currentStep.value.key}`, {
+    await api(`/sessions/${session.value.id}/steps/${step.key}`, {
       method: 'PATCH',
       body: JSON.stringify({
         status,
@@ -153,17 +177,32 @@ async function finishStep(status: 'completed' | 'skipped') {
         content_id: selectedContent.value,
       }),
     })
-    currentStep.value.status = status
-    currentStep.value.actual_duration_seconds = elapsed.value
+    step.status = status
+    step.actual_duration_seconds = elapsed.value
+
+    if (status === 'completed') {
+      playStepComplete()
+      message.success(
+        opts.fromTimer
+          ? `${stepEmoji} ${stepName}时间到，本步已完成`
+          : `${stepEmoji} ${stepName}已完成，真棒！`,
+      )
+    } else {
+      playStepSkip()
+      message.info(`已跳过「${stepName}」`)
+    }
+
     const next = session.value.steps.find((s) => s.status === 'pending')
     if (next) {
       await enterStep(next, true)
     } else {
       activeKey.value = null
-      message.success('所有步骤已完成，可以结束今日会话')
+      message.success('所有步骤已完成，可以结束今日会话并打卡')
     }
   } catch (e: unknown) {
     message.error(e instanceof Error ? e.message : '更新失败')
+  } finally {
+    finishing.value = false
   }
 }
 
@@ -171,12 +210,14 @@ async function completeSession() {
   if (!session.value) return
   stopTimer()
   try {
+    await unlockAudio()
     session.value = await api<Session>(`/sessions/${session.value.id}/complete`, {
       method: 'POST',
       body: JSON.stringify({ mood: mood.value || null, note: note.value }),
     })
     activeKey.value = null
-    message.success('太棒了！今日 SAVERS 已打卡')
+    playSessionComplete()
+    message.success('🎉 太棒了！今日晨启 SAVERS 已打卡，明天见')
   } catch (e: unknown) {
     message.error(e instanceof Error ? e.message : '完成失败')
   }
