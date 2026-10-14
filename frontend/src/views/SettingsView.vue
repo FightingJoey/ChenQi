@@ -65,13 +65,10 @@ onMounted(load)
 </script>
 
 <template>
-  <div class="space-y-6">
-    <div class="flex flex-wrap items-end justify-between gap-3">
-      <div class="min-w-0">
-        <h1 class="text-xl sm:text-2xl font-bold text-gray-800">设置</h1>
-        <p class="text-gray-500 text-sm mt-1">调整各步骤时长、开关与音效</p>
-      </div>
-      <n-button type="primary" class="!bg-orange-500 w-full sm:w-auto" :loading="saving" @click="save">保存</n-button>
+  <div class="space-y-6 flex flex-col">
+    <div class="min-w-0">
+      <h1 class="text-xl sm:text-2xl font-bold text-gray-800">设置</h1>
+      <p class="text-gray-500 text-sm mt-1">调整各步骤时长、开关与音效</p>
     </div>
 
     <n-card class="shadow-sm border-orange-100" title="反馈音效">
@@ -120,5 +117,15 @@ onMounted(load)
         默认顺序：静默 → 肯定语 → 观想 → 运动 → 阅读 → 书写。关闭的步骤不会出现在今日会话中。
       </p>
     </n-card>
+
+    <n-button
+      type="primary"
+      size="large"
+      class="!bg-orange-500 w-full sm:w-auto sm:min-w-[160px] sm:self-end"
+      :loading="saving"
+      @click="save"
+    >
+      保存
+    </n-button>
   </div>
 </template>
